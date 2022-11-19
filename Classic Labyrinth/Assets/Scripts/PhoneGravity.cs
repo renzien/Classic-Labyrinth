@@ -8,6 +8,7 @@ public class PhoneGravity : MonoBehaviour
     [SerializeField] float gravityMagnitude;
     
     bool useGyro;
+    Vector3 gravityDir;
     void Start()
     {
         if (SystemInfo.supportsGyroscope)
@@ -19,8 +20,18 @@ public class PhoneGravity : MonoBehaviour
 
     void Update()
     {
-        var gravityDir = useGyro ? Input.gyro.gravity : Input.acceleration;
+        var inputDir = useGyro ? Input.gyro.gravity : Input.acceleration;
 
-        Debug.Log(gravityDir);        
+        gravityDir = new Vector3
+        (
+            inputDir.x,
+            inputDir.z,
+            inputDir.y
+        );       
+    }
+
+    private void FixedUpdate()
+    {
+        rb.AddForce(gravityDir * gravityMagnitude, ForceMode.Acceleration);
     }
 }
